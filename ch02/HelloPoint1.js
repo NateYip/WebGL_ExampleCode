@@ -2,8 +2,9 @@
 // Vertex shader program
 var VSHADER_SOURCE = 
   'void main() {\n' +
-  '  gl_Position = vec4(0.0, 0.0, 0.0, 1.0);\n' + // Set the vertex coordinates of the point
-  '  gl_PointSize = 5.0;\n' +                    // Set the point size   
+  // 用齐次坐标表示三维坐标，有益矩阵乘法的运算。
+  '  gl_Position = vec4(0.0, 0.5, 0.0, 1.0);\n' + // Set the vertex coordinates of the point
+  '  gl_PointSize = 10.0;\n' +                    // Set the point size   
   '}\n';
 
 // Fragment shader program
@@ -36,5 +37,5 @@ function main() {
   gl.clear(gl.COLOR_BUFFER_BIT);
 
   // Draw a point
-  gl.drawArrays(gl.POINTS, 0, 3);
+  gl.drawArrays(gl.POINTS, 0, 1);
 }

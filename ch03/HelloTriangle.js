@@ -43,7 +43,7 @@ function main() {
   gl.clear(gl.COLOR_BUFFER_BIT);
 
   // Draw the rectangle
-  gl.drawArrays(gl.TRIANGLES, 0, n);
+  gl.drawArrays(gl.LINE_LOOP, 0, n);
 }
 
 function initVertexBuffers(gl) {

@@ -10,7 +10,7 @@ var VSHADER_SOURCE =
 // Fragment shader program
 var FSHADER_SOURCE =
   'void main() {\n' +
-  '  gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n' +
+  '  gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n' +
   '}\n';
 
 function main() {
@@ -49,10 +49,20 @@ function main() {
 
 function initVertexBuffers(gl) {
   var vertices = new Float32Array([
-    0.0, 0.5,   -0.5, -0.5,   0.5, -0.5
+    //这样画正方体是错误的，在第七章之前都没有使用深度坐标(z轴)
+    0.1, 0.1, 0.1,
+    0.1, 0.1, -0.1,
+    0.1, -0.1, 0.1, 
+    -0.1, 0.1,0.1, 
+    0.1,-0.1,-0.1,  
+    -0.1,0.1,-0.1,  
+    -0.1,-0.1,0.1,
+    -0.1,-0.1,-0.1,
+
   ]);
-  var n = 3; // The number of vertices
+  var n = 8; // The number of vertices
   //缺少的变量会自动补全为0 在下面的gl.vertexAttribPointer()方法的第二个参数会指明分量数量
+
   
 
   // Create a buffer object
@@ -73,7 +83,7 @@ function initVertexBuffers(gl) {
     return -1;
   }
   // Assign the buffer object to a_Position variable
-  gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
+  gl.vertexAttribPointer(a_Position, 3, gl.FLOAT, false, 0, 0);
 
   // Enable the assignment to a_Position variable
   gl.enableVertexAttribArray(a_Position);
