@@ -2,7 +2,7 @@
 // Vertex shader program
 var VSHADER_SOURCE =
   'attribute vec4 a_Position;\n' +
-  'uniform mat4 u_xformMatrix;\n' +
+  'uniform   u_xformMatrix;\n' +
   'void main() {\n' +
   '  gl_Position = u_xformMatrix * a_Position;\n' +
   '}\n';
