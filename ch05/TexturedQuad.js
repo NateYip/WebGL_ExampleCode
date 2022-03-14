@@ -57,10 +57,10 @@ function main() {
 function initVertexBuffers(gl) {
   var verticesTexCoords = new Float32Array([
     // Vertex coordinates, texture coordinate
-    -0.5,  0.5,   0.0, 1.0,
-    -0.5, -0.5,   0.0, 0.0,
-     0.5,  0.5,   1.0, 1.0,
-     0.5, -0.5,   1.0, 0.0,
+    -0.5,  0.5,   -0.5, 0.5,
+    -0.5, -0.5,   -0.5, -0.5,
+     0.5,  0.5,   0.5,  0.5,
+     0.5, -0.5,   0.5, -0.5,
   ]);
   var n = 4; // The number of vertices
 
