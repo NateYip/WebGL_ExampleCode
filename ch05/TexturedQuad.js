@@ -114,12 +114,14 @@ function initTextures(gl, n) {
   var image = new Image();  // Create the image object
   if (!image) {
     console.log('Failed to create the image object');
-    return false;
+    return false; 
   }
   // Register the event handler to be called on loading an image
   image.onload = function(){ loadTexture(gl, n, texture, u_Sampler, image); };
   // Tell the browser to load an image
-  image.src = '../resources/sky.jpg';
+  // image.crossOrigin='anonymous'
+  image.src = '../resources/sky.jpg'; // 这里要设置浏览器安全策略以忽视跨域请求
+
 
   return true;
 }
@@ -136,7 +138,7 @@ function loadTexture(gl, n, texture, u_Sampler, image) {
   // Set the texture image
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
   
-  // Set the texture unit 0 to the sampler
+  // Set the texture unit 0 to the sampler 这里的第二个参数与131行的纹理单元所对应的标号相同 TEXTURE0 所以这里第二个参数为 0
   gl.uniform1i(u_Sampler, 0);
   
   gl.clear(gl.COLOR_BUFFER_BIT);   // Clear <canvas>
