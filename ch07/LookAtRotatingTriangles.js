@@ -63,6 +63,7 @@ function main() {
   // Calculate matrix for rotate
   var modelMatrix = new Matrix4();
   var currentAngle = 0.0;
+  document.onkeydown = function(ev){ keydown(ev, gl, n, u_ViewMatrix, viewMatrix); };
 
   const tick = function() {
     currentAngle = updateAngle(currentAngle);
@@ -70,6 +71,7 @@ function main() {
     requestAnimationFrame(tick, canvas); 
   };
   tick();
+
   // modelMatrix.setRotate(-10, 0, 0, 1); // Rotate around z-axis
 
   // // Pass the view projection matrix and model matrix
@@ -154,4 +156,26 @@ function draw(gl , n ,currentAngle ,modelMatrix , u_ModelMatrix ,viewMatrix ,u_V
   gl.clear(gl.COLOR_BUFFER_BIT);
   gl.drawArrays(gl.TRIANGLES, 0, n);
 
+}
+function keydown(ev, gl, n, u_ViewMatrix, viewMatrix) {
+  if(ev.keyCode == 39) { // The right arrow key was pressed
+    g_eyeX += 0.01;
+  } else 
+  if (ev.keyCode == 37) { // The left arrow key was pressed
+    g_eyeX -= 0.01;
+  } else { return; }
+  setNewView(gl, n, u_ViewMatrix, viewMatrix);    
+}
+var g_eyeX = 0.20, g_eyeY = 0.25, g_eyeZ = 0.25; // Eye position
+
+function setNewView(gl, n, u_ViewMatrix, viewMatrix) {
+  // Set the matrix to be used for to set the camera view
+  viewMatrix.setLookAt(g_eyeX, g_eyeY, g_eyeZ, 0, 0, 0, 0, 1, 0);
+
+  // Pass the view projection matrix
+  gl.uniformMatrix4fv(u_ViewMatrix, false, viewMatrix.elements);
+
+  gl.clear(gl.COLOR_BUFFER_BIT);     // Clear <canvas>
+
+  gl.drawArrays(gl.TRIANGLES, 0, n); // Draw the rectangle
 }
