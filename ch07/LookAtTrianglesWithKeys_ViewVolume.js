@@ -138,7 +138,7 @@ function draw(gl, n, u_ViewMatrix, viewMatrix) {
 
   // Clear <canvas>
   gl.clear(gl.COLOR_BUFFER_BIT);
-
+ console.log("new bug")
   // Draw the rectangle
   gl.drawArrays(gl.TRIANGLES, 0, n);
 }
