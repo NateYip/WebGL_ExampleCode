@@ -81,7 +81,9 @@ function main() {
     console.log('Failed to get the storage location');
     return;
   }
-
+  var vpMatrix = new Matrix4();   // View projection matrix
+  vpMatrix.setPerspective(30, canvas.width/canvas.height, 1, 100);
+  vpMatrix.lookAt(6, 6, 14, 0, 0, 0, 0, 1, 0);
   // Set the light color (white)
   gl.uniform3f(u_LightColor, 1.0, 1.0, 1.0);
   // Set the light direction (in the world coordinate)
@@ -89,34 +91,37 @@ function main() {
   // Set the ambient light
   gl.uniform3f(u_AmbientLight, 0.2, 0.2, 0.2);
 
+  var currentAngle = 0.0;  // Current rotation angle
   var modelMatrix = new Matrix4();  // Model matrix
   var mvpMatrix = new Matrix4();    // Model view projection matrix
   var normalMatrix = new Matrix4(); // Transformation matrix for normals
 
-  // Calculate the model matrix
-  modelMatrix.setRotate(90, 0, 1, 0); // Rotate around the y-axis
-  // Calculate the view projection matrix
-  mvpMatrix.setPerspective(30, canvas.width/canvas.height, 1, 100);
-  mvpMatrix.lookAt(6, 6, 14, 0, 0, 0, 0, 1, 0);
-  mvpMatrix.multiply(modelMatrix);
-  // Calculate the matrix to transform the normal based on the model matrix
-  normalMatrix.setInverseOf(modelMatrix);
-  normalMatrix.transpose();
+  var tick = function() {
+    currentAngle = animate(currentAngle);  // Update the rotation angle
 
-  // Pass the model matrix to u_ModelMatrix
-  gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
+    // Calculate the model matrix
+    modelMatrix.setRotate(currentAngle, 0, 1, 0); // Rotate around the y-axis
+    // Pass the model matrix to u_ModelMatrix
+    gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
 
-  // Pass the model view projection matrix to u_mvpMatrix
-  gl.uniformMatrix4fv(u_MvpMatrix, false, mvpMatrix.elements);
+    // Pass the model view projection matrix to u_MvpMatrix
+    mvpMatrix.set(vpMatrix).multiply(modelMatrix);
+    gl.uniformMatrix4fv(u_MvpMatrix, false, mvpMatrix.elements);
 
-  // Pass the transformation matrix for normals to u_NormalMatrix
-  gl.uniformMatrix4fv(u_NormalMatrix, false, normalMatrix.elements);
+    // Pass the matrix to transform the normal based on the model matrix to u_NormalMatrix
+    normalMatrix.setInverseOf(modelMatrix);
+    normalMatrix.transpose();
+    gl.uniformMatrix4fv(u_NormalMatrix, false, normalMatrix.elements);
 
-  // Clear color and depth buffer
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    // Clear color and depth buffer
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  // Draw the cube
-  gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_BYTE, 0);
+    // Draw the cube
+    gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_BYTE, 0);
+
+    requestAnimationFrame(tick, canvas); // Request that the browser ?calls tick
+  };
+  tick();
 }
 
 function initVertexBuffers(gl) {
@@ -209,4 +214,17 @@ function initArrayBuffer(gl, attribute, data, num) {
   gl.enableVertexAttribArray(a_attribute);
 
   return true;
+}
+// Rotation angle (degrees/second)
+var ANGLE_STEP = 30.0;
+// Last time that this function was called
+var g_last = Date.now();
+function animate(angle) {
+  // Calculate the elapsed time
+  var now = Date.now();
+  var elapsed = now - g_last;
+  g_last = now;
+  // Update the current rotation angle (adjusted by the elapsed time)
+  var newAngle = angle + (ANGLE_STEP * elapsed) / 1000.0;
+  return newAngle %= 360;
 }
